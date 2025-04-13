@@ -1,14 +1,22 @@
-# Imagen base con Java 17
-FROM eclipse-temurin:17-jdk-alpine
+# Etapa de compilación
+FROM maven:3.8.5-eclipse-temurin-17-alpine AS build
 
-# Directorio de trabajo en el contenedor
 WORKDIR /app
 
-# Copiar el JAR compilado al contenedor
-COPY target/bancoudea-0.0.1-SNAPSHOT.jar app.jar
+# Copia todo el proyecto
+COPY . .
 
-# Puerto que expone tu aplicación
+# Ejecuta el build (esto genera el JAR)
+RUN mvn clean package -DskipTests
+
+# Etapa final (runtime)
+FROM eclipse-temurin:17-jdk-alpine
+
+WORKDIR /app
+
+# Copia el JAR desde la etapa anterior
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
 
-# Comando para ejecutar la app
 ENTRYPOINT ["java", "-jar", "app.jar"]
