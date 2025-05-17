@@ -28,7 +28,7 @@ public class CustomerController {
         return ResponseEntity.ok(customerFacade.getCustomerById(id));
     }
 
-//Crear un nuevo cliente
+    //Crear un nuevo cliente
     @PostMapping
     public ResponseEntity<CustomerDTO> createCustomer(@RequestBody CustomerDTO customerDTO) {
         if(customerDTO.getBalance() == null) {
